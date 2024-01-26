@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 1. 데이터 베이스 정보 수집 -->
+	<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource"
+	   p:driverClassName="oracle.jdbc.driver.OracleDriver"
+	   p:url="jdbc:oracle:thin:@localhost:1521:XE"
+	   p:username="hr"
+	   p:password="happy"
+	   p:maxActive="10"
+	   p:maxIdle="10"
+	   p:maxWait="-1"
+	/>
+	
+	<!-- 2. 수집된 정보를  Mybatis로 전송
+	     => SQL문장 저장 => getConnection(), disConnerction()의 역할을 수행
+	     => SqlSessionFactoryBean
+	-->
+	<bean id="ssf" class="org.mybatis.spring.SqlSessionFactoryBean"
+	   p:dataSource-ref="ds"
+	/>
+	
+		<!-- 1~2까지는 동일 -->
+	
+	<!-- 3.
+	     SqlSesseionFactoryBean 객체를 전송
+	     => MapperFactoryBean(mapper => interface를 구현해 주는 클래스)
+	-->
+	<bean id="mapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
+	   p:sqlSessionFactory-ref="ssf"
+	   p:mapperInterface="com.sist.dao.SeoulMapper"
+	/>
+	
+	<!--  4.
+	     구현된 인터페이스를 DAO로 전송 => 
+	-->
+	<bean id="dao" class="com.sist.dao.SeoulDAO"
+	   p:mapper-ref="mapper"
+	/>
+</beans>

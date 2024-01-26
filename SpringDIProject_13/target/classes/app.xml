@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		<!-- [사용자 정의 메모리 할당] -->
+		<context:component-scan base-package="com.sist.*"/>
+		<!-- [선택적인 메모리 할당] 
+		 ===========================================================
+		 @Component = 일반클래스
+         @Repository = DAO 1개
+         @Service = DAO 여러개가 묶인경우
+         @Controller = Model (파일제어)
+         @RestController = Model (데이터전송)
+         @ControllerAdvice = Model 공통 예외 처리
+         @Configuration = XML을 대체하는 파일
+         ===========================================================
+         @Autowired = 스프링 안에 이미 생성되어있는 클래스 객체 주소를 찾아서 자동 주입
+                    => getBean("")
+         @PostConstruct = 메소드 호출이 가능 생성시 자동호출
+                        => init-method
+         @PreDestroy = 소멸시 자동 호출
+                     => destroy-method
+         @Resource : 선택적으로 객체 선택 => 1.8까지 사용이 가능
+         ===========================================================
+         ***스프링은 클래스 관리자
+            => 생성, 소멸, 필요시에는 멤버변수 초기화
+                        ===================주입
+                         =>setter,생성자 매개변수
+         메모리 할당시 필요한 데이터 주입 (DI)
+          => 작은 의미 : 멤버변수의 초기화
+          => 큰 의미 : 클래스와 클래스의 연관 관계 설정 => 메뉴얼
+         ===========================================================
+         메모리 할당 요청
+         1. 클래스 한개 <bean>
+            => 라이브러리 클래스 (MyBatis)
+         2. 패키지 단위 <context:component-scan base-package=""/>
+            => 사용자 정의 클래스
+            => ~VO
+		-->
+		<!-- [데이터 베이스 관련] -->
+		<!-- [데이터 베이스 연결과 관련된 정보를 모음] -->
+		<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource"
+		   p:driverClassName="oracle.jdbc.driver.OracleDriver"
+		   p:url="jdbc:oracle:thin:@localhost:1521:XE"
+		   p:username="hr"
+		   p:password="happy"
+		/>
+		
+		<bean id="ssf" class="org.mybatis.spring.SqlSessionFactoryBean"
+	  	   p:dataSource-ref="ds"
+		/>
+		
+		<bean id="mapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
+		   p:sqlSessionFactory-ref="ssf"
+		   p:mapperInterface="com.sist.dao.EmpMapper"
+		/>
+		
+		<!-- 따로 DAO를 안넘겨줘도됨 위에서 한번에 넘겨서 -->
+</beans>

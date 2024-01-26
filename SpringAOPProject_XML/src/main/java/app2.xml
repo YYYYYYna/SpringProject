@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+    
+    <!-- 어노테이션 대신 여기서 id값 생성 -->
+    <bean id="dao" class="com.sist.dao.MyDAO2"/>
+    
+    <!-- aop 생성 -->
+    <!-- 
+        자동 호출이 가능 
+        1. 언제 어디서 호출할지 여부 확인 
+        = 시점 => 어떤 클래스의 메소드에 적용
+                 PointCut
+        = 호출 위치 지정 => JoinPoint
+          before 
+          after
+          after-returning
+          after-throwing
+          around
+          
+          public String display()
+          {
+             before => 호출 
+             try
+             {
+                 around => 작업시간 , 트랜잭션 
+                 ==========
+                  핵심 코딩 
+                 ==========
+                 around
+             }catch(Exception e)
+             {
+                 after-throwing
+             }
+             finally
+             {
+                after
+             }
+             return ""; => after-returning
+          }
+          
+          * com.sist.dao.MyDAO2.*(..)
+          =                    == === 
+          return형             모든  매개변수가
+                             메소드  0이상
+     -->
+     <!-- 여기서 어디서 method를 불러오는지 명시해주네... -->
+     <bean id="aspect" class="com.sist.aop.DBAspect"/>
+     
+     <aop:config>
+       <!-- ref="aspect": "aspect"라는 이름의 bean을 참조함을 알려줌 -->
+       <aop:aspect ref="aspect"><!-- 공통으로 사용되는 클래스 -->
+       
+         <!-- 시작과 동시에 method는 id값처럼 이름으로 호출하는게 아니라 해당 method를 실행시키는거임 -->
+         <aop:before method="getConnection" 
+          pointcut="execution(* com.sist.dao.MyDAO2.*(..))"
+         />
+         
+         <!-- finally : 무조건 수행 -->
+         <aop:after method="disConnection"
+          pointcut="execution(* com.sist.dao.MyDAO2.*(..))"
+         />
+         
+       </aop:aspect>
+     </aop:config>
+</beans>
