@@ -36,7 +36,7 @@ public class SeoulDAO {
 	{
 		return mapper.seoulFindData(map);
 	}
-	public SeoulVO seoulFindPage(Map map)
+	public int seoulFindPage(Map map)
 	{
 		return mapper.seoulFindPage(map);
 	}

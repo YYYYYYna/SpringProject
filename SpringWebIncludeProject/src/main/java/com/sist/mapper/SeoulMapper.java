@@ -55,17 +55,18 @@ public interface SeoulMapper {
 	
 	//명소검색 만드는 부분
 	@Select("SELECT no, title, poster, num "
-			+ "FROM (SELECT no, title, poster, num rownum as num "
+			+ "FROM (SELECT no, title, poster, rownum as num "
 			+ "FROM (SELECT no, title, poster "
 			+ "FROM ${table_name} "
-			+ "WHERE title LIKE '%'||#{ss}||'%'"
-			+ "ORDER BY no ASC))"
+			+ "WHERE title LIKE '%'||#{ss}||'%' "
+			+ "ORDER BY no ASC)) "
 			+ "WHERE num BETWEEN #{start} AND #{end} ")
 	public List<SeoulVO> seoulFindData(Map map);
 	
-	@Select("SELECT CEIL(COUNT(*)/12.0) FROM ${table_name} "
-			+ "WHERE title LIKE '%'||#{ss}||'%'" )
-	public SeoulVO seoulFindPage(Map map);
+	@Select("SELECT CEIL(COUNT(*)/12.0) "
+			+ "FROM ${table_name} "
+			+ "WHERE title  LIKE '%'||#{ss}||'%' ")
+	public int seoulFindPage(Map map);
 	
 	
 	
