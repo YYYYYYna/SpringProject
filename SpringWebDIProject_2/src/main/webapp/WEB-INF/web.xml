@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<!-- 이부분이 톰캣이 읽어가는 부분 -->
+	<!-- 1. 소스분석을 한다면 => web.xml을 가장 먼저 봐야함 
+	                        a) 프레임워크의 종류를 봐야함
+	                           스프링 => DispatcherServlet 
+	                           스트러치 => ActionServlet
+	                                  => FilterDispatcher
+	                                   
+	                     => 그 다음에 server.xml
+	     2. xml/java 환경설정
+	     3. Model => DAO => JSP
+	     
+	     ** 서블릿은 URL주소에 의해 톰캣이 실행한다.
+	     ** @WebServlet("*.do")를 안하는 이유가 안에 확장자를 고쳐야하는데
+	        어노테이션은 수정을 못하니까.. 그래서 사용하지 않음
+	        그니까 현재 파일실행은 이 파일(web.xml)부터 시작하는걸 잊지말기
+	     ** 모든 내용을 다 서버에서 제어하는게 아님을 기억하기 URL확장자등등..여러가지가 있음
+	-->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/application-*.xml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 
+	    <init-param>
+			키: <param-name>contextConfigLocation</param-name>
+			값: <param-value>/WEB-INF/config/application-*.xml</param-value>
+		</init-param>
+		그래서 키를 호출하면 값을 가져오는 원리로 xml파일을 가져오고 있음
+	 -->
+	
+	<!-- DispatcherServlet -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>
+			org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>
