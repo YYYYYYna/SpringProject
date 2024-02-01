@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!-- 엄밀히 말하면 쓰는 순서는 상관없음 메모리할당을 미리 하고 들어가기 때문에 -->
+	
+	<!-- properties파일 읽기 -->
+	<util:properties id="db" location="/WEB-INF/config/db.properties"/>
+	
+	<bean id="ds"
+	   class="org.apache.commons.dbcp.BasicDataSource"
+       p:driverClassName="#{db['driver']}"
+       p:url="#{db['url']}"
+       p:username="#{db['username']}"
+       p:password="#{db['password']}"
+	/>
+	
+	<!-- getConnerction/disConnection을 만드는 부분 -->
+	<bean id="ssf"
+	   class="org.mybatis.spring.SqlSessionFactoryBean"
+	   p:dataSource-ref="ds"
+	/>
+	
+	<mybatis-spring:scan base-package="com.sist.mapper"
+      factory-ref="ssf"
+    />
+    
+</beans>
