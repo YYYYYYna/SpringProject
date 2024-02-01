@@ -10,6 +10,7 @@ public class MoimVO {
 	 * 
 	 * 이미지 img
        장소명 loc
+       운영여부 type
        센터번호 num
        운영기관 center
        센터이용시간 time
