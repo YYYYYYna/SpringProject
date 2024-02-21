@@ -50,8 +50,14 @@
        <tr>
          <th width=15% class="text-center">첨부파일</th>
          <td width=85%>
+         <div v-if="previewImagesArray.length > 0">
+                <h5>미리 보기:</h5>
+                <div v-for="(image, index) in previewImagesArray" :key="index">
+                  <img :src="image" alt="이미지 미리 보기" style="max-width: 500px; max-height: 500px; margin: 5px;">
+                </div>
+              </div>
            <input type=file ref="upfiles" class="input-sm" multiple="multiple" accept="upload/*" 
-            v-model="upfiles">
+            v-model="upfiles"  @change="previewImages">
          </td>
        </tr>
        <tr>
@@ -82,11 +88,26 @@
     			subject:'',
     			content:'',
     			pwd:'',
-    			upfiles:''
+    			upfiles:'',
+    	        previewImagesArray: [] // 미리 보기에 사용될 이미지 배열
     		}
     	},
     	// 멤버함수 설정
     	methods:{
+    		  // 파일 선택시 미리 보기 이미지 설정
+            previewImages(event) {
+              const files = event.target.files;
+              if (files && files.length > 0) {
+                this.previewImagesArray = []; // 이전에 미리 보여준 이미지 초기화
+                for (let i = 0; i < files.length; i++) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    this.previewImagesArray.push(e.target.result); // 파일을 미리 보기 배열에 추가
+                  };
+                  reader.readAsDataURL(files[i]); // 이미지 파일을 Data URL로 변환하여 미리 보기 배열에 추가
+                }
+              }
+            },
     		// submit버튼 호출시에 => 데이터전송이 없이 submitForm()를 호출 
     		// @submit.prevent
     		// submit / a => defaultPrevent => 이벤트 동작을 중지 

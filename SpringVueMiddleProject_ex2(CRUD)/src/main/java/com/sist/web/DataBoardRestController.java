@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.*; 
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -144,6 +142,44 @@ public class DataBoardRestController {
 			bos.close();
 		}catch(Exception ex) {}
 	}
+   
+   @GetMapping(value = "databoard/view_image.do")
+   public void databoard_view_image(String fn, HttpServletRequest request, HttpServletResponse response) {
+       String path = request.getSession().getServletContext().getRealPath("/") + "upload\\";
+       path = path.replace("\\", File.separator);
+       try {
+           File file = new File(path + fn);
+           if (!file.exists() || !file.isFile()) {
+               // 파일이 존재하지 않으면 예외 처리
+               throw new FileNotFoundException("File not found: " + file.getPath());
+           }
+           
+           // 이미지인지 확인
+           String contentType = Files.probeContentType(file.toPath());
+           if (contentType == null || !contentType.startsWith("image")) {
+               // 이미지가 아니면 예외 처리
+               throw new IOException("File is not an image: " + file.getPath());
+           }
+
+           // 이미지 출력 설정
+           response.setContentType(contentType);
+           response.setHeader("Content-Disposition", "inline; filename=" + URLEncoder.encode(fn, "UTF-8"));
+
+           // 이미지를 클라이언트로 전송
+           try (InputStream in = new FileInputStream(file);
+                OutputStream out = response.getOutputStream()) {
+               byte[] buffer = new byte[1024];
+               int bytesRead;
+               while ((bytesRead = in.read(buffer)) != -1) {
+                   out.write(buffer, 0, bytesRead);
+               }
+           }
+       } catch (Exception ex) {
+           // 예외 처리
+           ex.printStackTrace();
+       }
+   }
+
 }
 
 
