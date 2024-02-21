@@ -40,4 +40,11 @@ public interface MemberMapper {
 	@Update("UPDATE projectMember SET lastlogin=SYSDATE "
 			+ "WHERE userId=#{userId}")
 	public void lastLoginUpdate(String userId);
+	
+	//Ã¤ÆÃ
+	 @Select("SELECT pm.userId,userName,userPwd,enabled,authority "
+	           +"FROM projectMember pm,projectAuthority pa "
+	           +"WHERE pm.userId=pa.userId "
+	           +"AND pm.userId=#{userId}")
+	   public MemberVO memberInfo(String userId);
 }

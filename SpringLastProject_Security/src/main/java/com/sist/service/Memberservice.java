@@ -16,4 +16,7 @@ public interface Memberservice {
 	//3.session 대신 principal에 저장
 	public MemberVO memberSessionData(String userId);
 	public void lastLoginUpdate(String userId);
+	
+	//채팅
+		public MemberVO memberInfo(String userId);
 }

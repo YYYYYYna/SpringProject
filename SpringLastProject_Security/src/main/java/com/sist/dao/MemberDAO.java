@@ -69,4 +69,10 @@ public class MemberDAO {
 	{
 		mapper.lastLoginUpdate(userId);
 	}
+	
+	//Ã¤ÆÃ
+	public MemberVO memberInfo(String userId)
+	{
+		return mapper.memberInfo(userId);
+	}
 }

@@ -68,7 +68,7 @@
           </sec:authorize>
         </ul>
       </li>
-      <li><a href="../chat/chat.do">실시간 채팅</a></li>
+      <li><a href="../chat/chat.do" target="_blank">실시간 채팅</a></li>
       <sec:authorize access="hasRole('ROLE_USER')">
       <li><a href="#">마이페이지</a></li>
       </sec:authorize>

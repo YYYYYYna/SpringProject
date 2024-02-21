@@ -48,4 +48,10 @@ public class MemberServiceImpl implements Memberservice{
 		dao.lastLoginUpdate(userId);
 	}
 
+	@Override
+	public MemberVO memberInfo(String userId) {
+		// TODO Auto-generated method stub
+		return dao.memberInfo(userId);
+	}
+
 }
